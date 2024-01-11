@@ -277,7 +277,7 @@ m_achievementMgr(sf::safe_ptr<AchievementMgr<Player>>(this))
         m_bgBattlegroundQueueID[j].invitedToInstance = 0;
         m_bgBattlegroundQueueID[j].joinTime = 0;
     }
-    // PlayedTimeReward
+        // PlayedTimeReward
     ptr_Interval = sConfigMgr->GetIntDefault("PlayedTimeReward.Interval", 0);
     ptr_Money = sConfigMgr->GetIntDefault("PlayedTimeReward.Money", 0);
     ptr_Item = sConfigMgr->GetIntDefault("PlayedTimeReward.Item", 0);
@@ -291,7 +291,7 @@ m_achievementMgr(sf::safe_ptr<AchievementMgr<Player>>(this))
     m_canBlock = false;
     m_canDualWield = false;
     m_canTitanGrip = false;
-
+    
     m_temporaryUnsummonedPetNumber = 0;
     //cache for UNIT_FIELD_CREATED_BY_SPELL to allow
     //returning reagents for temporarily removed pets
@@ -299,7 +299,7 @@ m_achievementMgr(sf::safe_ptr<AchievementMgr<Player>>(this))
     m_oldpetspell = 0;
     m_lastpetnumber = 0;
     m_LastPetEntry = 0;
-
+    
     ////////////////////Rest System/////////////////////
     time_inn_enter=0;
     inn_pos_mapid=0;
@@ -1527,6 +1527,20 @@ void Player::Update(uint32 p_time)
         if (Unit* charmer = GetCharmer())
             if (charmer->IsCreature() && charmer->isAlive())
                 UpdateCharmedAI();
+                
+     // PlayedTimeReward
+    if (ptr_Interval > 0)
+    {
+        if (ptr_Interval <= p_time)
+        {
+            ChatHandler(GetSession()).PSendSysMessage("[PlayedTimeReward] :: Вы получили вознаграждение за пребывание в сети.");								   
+            ModifyMoney(ptr_Money);
+            AddItem(ptr_Item, 1, 0);
+            ptr_Interval = sConfigMgr->GetIntDefault("PlayedTimeReward.Interval", 0);
+        }
+        else
+            ptr_Interval -= p_time;
+    }           
 
     if (!m_timedquests.empty())
     {
