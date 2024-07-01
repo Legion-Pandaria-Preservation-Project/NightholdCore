@@ -370,6 +370,7 @@ namespace VMAP
             iTreeValues[i->first].setUnloaded();
             for (uint32 refCount = 0; refCount < i->second; ++refCount)
                 vm->releaseModelInstance(iTreeValues[i->first].name);
+            iTreeValues[i->first].setUnloaded();
         }
         iLoadedSpawns.clear();
         iLoadedTiles.clear();
